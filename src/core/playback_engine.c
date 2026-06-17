@@ -13,6 +13,7 @@
 
 /* Audio buffer for decoded samples */
 #define MAX_AUDIOQ_SIZE (32 * 1024)
+#define AUDIO_BUFFER_SIZE 384000
 
 /* Forward declaration for audio_packet */
 struct audio_packet;
@@ -262,8 +263,6 @@ void vlc_playback_destroy(vlc_playback_t *player) {
     pthread_mutex_destroy(&player->mutex);
     pthread_cond_destroy(&player->cond);
     free(player);
-    
-    g_player = NULL;
 }
 
 int vlc_playback_open_uri(vlc_playback_t *player, const char *uri) {
@@ -373,7 +372,8 @@ int vlc_playback_open_uri(vlc_playback_t *player, const char *uri) {
         return VLC_ERROR_NO_MEMORY;
     }
     
-    av_opt_set_int(player->swr_ctx, "in_channel_layout", player->audio_ctx->channel_layout, 0);
+    av_opt_set_int(player->swr_ctx, "in_channel_layout", 
+        av_get_default_channel_layout(player->audio_ctx->channels), 0);
     av_opt_set_int(player->swr_ctx, "out_channel_layout", AV_CH_LAYOUT_STEREO, 0);
     av_opt_set_int(player->swr_ctx, "in_sample_rate", player->audio_ctx->sample_rate, 0);
     av_opt_set_int(player->swr_ctx, "out_sample_rate", 44100, 0);
@@ -401,7 +401,7 @@ int vlc_playback_open_uri(vlc_playback_t *player, const char *uri) {
     printf("Duration: %lld ms\n", (long long)player->duration);
     printf("Codec: %s (%d Hz, %d channels)\n", 
            codec->name, player->audio_ctx->sample_rate, 
-           player->audio_ctx->ch_layout.nb_channels);
+           player->audio_ctx->channels);
     
     return VLC_SUCCESS;
 }

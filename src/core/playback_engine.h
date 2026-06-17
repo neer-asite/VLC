@@ -38,7 +38,7 @@ struct vlc_playback {
     int audio_buf_size;
     
     /* SDL audio */
-    void *audio_device;
+    unsigned int audio_device;
     void *audio_spec;
     
     /* Decode thread */
