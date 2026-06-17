@@ -16,7 +16,7 @@ pkg_check_modules(AVUTIL libavutil)
 pkg_check_modules(SWRESAMPLE libswresample)
 
 # Check for SDL2
-pkg_check_modules(SDL2 SDL2)
+pkg_check_modules(SDL2 sdl2)
 
 set(AVAILABLE_LIBS "")
 set(NEEDED_LIBS "")
