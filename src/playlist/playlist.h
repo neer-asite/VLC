@@ -2,6 +2,7 @@
 #define PLAYLIST_H
 
 #include <pthread.h>
+#include <stdbool.h>
 
 typedef struct playlist_item {
     char *uri;

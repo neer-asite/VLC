@@ -1,4 +1,5 @@
 enable_testing()
-add_executable(vlc_test test_playlist.c)
+add_executable(vlc_test test_playlist.c ../src/playlist/playlist.c)
+target_include_directories(vlc_test PRIVATE ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src/playlist)
 target_link_libraries(vlc_test m pthread)
 add_test(NAME vlc_test COMMAND vlc_test)

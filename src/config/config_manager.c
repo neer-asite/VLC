@@ -1,4 +1,5 @@
 #include "config_manager.h"
+#include "../../include/vlc.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
