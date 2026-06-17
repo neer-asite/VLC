@@ -12,52 +12,16 @@
 #include <math.h>
 
 /* Audio buffer for decoded samples */
-#define AUDIO_BUFFER_SIZE (192000 * 2)
 #define MAX_AUDIOQ_SIZE (32 * 1024)
 
-typedef struct audio_packet {
+/* Forward declaration for audio_packet */
+struct audio_packet;
+typedef struct audio_packet audio_packet_t;
+
+/* Audio packet structure */
+struct audio_packet {
     AVPacket *pkt;
     struct audio_packet *next;
-} audio_packet_t;
-
-struct vlc_playback {
-    vlc_state_t state;
-    char *current_uri;
-    int64_t position;
-    int64_t duration;
-    int volume;
-    bool mute;
-    float speed;
-    bool running;
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-    
-    /* FFmpeg context */
-    AVFormatContext *format_ctx;
-    AVCodecContext *audio_ctx;
-    int audio_stream;
-    SwrContext *swr_ctx;
-    
-    /* Audio queue */
-    audio_packet_t *audioq_first;
-    audio_packet_t *audioq_last;
-    int audioq_size;
-    
-    /* Audio buffer */
-    uint8_t audio_buf[AUDIO_BUFFER_SIZE];
-    uint8_t *audio_buf_ptr;
-    int audio_buf_size;
-    int audio_buf_index;
-    
-    /* SDL audio */
-    SDL_AudioDeviceID audio_device;
-    SDL_AudioSpec audio_spec;
-    
-    /* Decoding thread */
-    pthread_t decode_thread;
-    
-    /* Volume control */
-    float volume_factor;
 };
 
 /* Decode thread function */

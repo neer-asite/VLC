@@ -4,6 +4,11 @@
 #include "../../include/vlc.h"
 #include <pthread.h>
 
+/* Forward declarations for FFmpeg types */
+struct AVFormatContext;
+struct AVCodecContext;
+struct SwrContext;
+
 struct vlc_playback {
     vlc_state_t state;
     char *current_uri;
@@ -15,8 +20,32 @@ struct vlc_playback {
     bool running;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-    vlc_event_callback_t events[16];
-    void *event_data[16];
+    
+    /* FFmpeg context */
+    struct AVFormatContext *format_ctx;
+    struct AVCodecContext *audio_ctx;
+    int audio_stream;
+    struct SwrContext *swr_ctx;
+    
+    /* Audio queue */
+    struct audio_packet *audioq_first;
+    struct audio_packet *audioq_last;
+    int audioq_size;
+    
+    /* Audio buffer */
+    uint8_t audio_buf[384000];
+    uint8_t *audio_buf_ptr;
+    int audio_buf_size;
+    
+    /* SDL audio */
+    void *audio_device;
+    void *audio_spec;
+    
+    /* Decode thread */
+    pthread_t decode_thread;
+    
+    /* Volume control */
+    float volume_factor;
 };
 
 vlc_playback_t *vlc_playback_create(void);
